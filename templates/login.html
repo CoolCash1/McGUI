@@ -1,0 +1,28 @@
+{%extends "base-light.html"%}
+{%block title%}Login{%endblock%}
+{%block head%}
+<link rel="stylesheet" href="static/css/login.css">
+{%endblock%}
+{%block content%}
+        {%with messages = get_flashed_messages()%}
+            {%if messages%}
+                {% for msg in messages %}
+                <p>{{msg}}</p>
+                {%endfor%}
+            {% endif %}
+        {%endwith%}
+<form class="form-signin" method="post" action="#">
+    <a href="/"><img class="mb-4" src="/static/logo.svg" alt="" width="72" height="72"></a>
+    
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <input type="password" name="password" class="form-control" placeholder="Password" required>
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" value="remember-me"> Stay logged in
+        </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <p class="mt-5 mb-3 text-muted">Cashton</p>
+</form>
+
+{%endblock%}
