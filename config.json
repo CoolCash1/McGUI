@@ -1,0 +1,10 @@
+{
+    "password": "admin",
+    "serverName": "McGUI",
+    "serverLocation": "",
+    "serverAddress": "",
+    "serverRCONPassword": "",
+    "serverRCONPort": 25585,
+    "serverQueryPort": 25565,
+    "serverStartScript": ""
+}

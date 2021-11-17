@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Players{% endblock %}
+{% block scripts %}
+    <script src="/static/js/adminPanels/playerViewer.js"></script>
+{% endblock %}
+{% block content %}
+    <h1>Players</h1>
+    <div class="container">
+        <div class="row align-items-start">
+          <div class="col" id="onlinePlayers">
+            <h3>Online - 0</h3>
+            <p>Loading...</p>
+          </div>
+          <div class="col" id="operators">
+            <h3>Operators</h3>
+    
+          </div>
+          <div class="col" id="banlist">
+            <h3>Banlist</h3>
+            <div class="card bg-dark text-light" style="margin-bottom: 8px;">
+                <div class="card-body" >
+                    <h5 class="card-title"><img style="margin-right: 15px;" src="https://crafatar.com/avatars/38d1831354b24a6ca7c0052268d5e02d?size=32" class="image" alt="...">TheSacredCosmo</h5>
+                    <a href="#" class="btn btn-primary">Options</a>
+                    <a href="#" class="btn btn-secondary disabled">Kick</a>
+                    <a href="#" class="btn btn-secondary">Deop</a>
+                    <a href="#" class="btn btn-secondary">Ban</a>
+                </div>
+            </div>
+            <div class="card bg-dark text-light">
+                <div class="card-body">
+                    <h5 class="card-title"><img style="margin-right: 15px;" src="https://crafatar.com/avatars/9cb88ac7700f4638b754121aa7657829?size=32" class="image" alt="...">bosscrafter231</h5>
+                    <a href="#" class="btn btn-primary">Options</a>
+                    <a href="#" class="btn btn-secondary">Kick</a>
+                    <a href="#" class="btn btn-secondary">OP</a>
+                    <a href="#" class="btn btn-secondary">Ban</a>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+{% endblock %}

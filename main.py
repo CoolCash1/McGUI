@@ -5,7 +5,7 @@ from json import loads, dumps
 from serverPanel import serverPanel
 from api import api
 
-currentVersion = "Pre-Alpha 0.1"
+currentVersion = "Alpha 1.0"
 
 app = Flask(__name__)
 app.secret_key = "TEST1234"
@@ -59,7 +59,7 @@ def password():
             if currentpassword == config["password"]:
                 if newpasswordretype == newpassword:
                     config["password"] = newpassword
-                    updateConfigFile()
+                    updateConfigFile() 
                     flash("Password Updated")
                     return redirect(url_for("logout"))
 
@@ -81,6 +81,14 @@ def logout():
     session.pop("loggedIn", None)
     flash('You have been logged out!', 'info')
     return redirect(url_for('login'))
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/opensource')
+def opensource():
+    return render_template('opensource.html')
 
 # HOST STATIC FILES
 @app.route('/static/<path:path>')

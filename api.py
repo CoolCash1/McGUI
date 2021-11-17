@@ -4,6 +4,8 @@ from mcstatus import MinecraftServer
 from mcrcon import MCRcon
 from subprocess import call
 from os import path, listdir
+import sys
+from datetime import datetime
 
 from werkzeug.wrappers import response
 
@@ -22,7 +24,7 @@ def server():
         queryAllowed = True
         try:
             global server
-            server = MinecraftServer.lookup(config["serverAddress"])
+            server = MinecraftServer.lookup(config["serverAddress"],)
             server.status()
         except:
             online = False
@@ -75,7 +77,7 @@ def toggleServer():
                 mcr.command('stop')
 
         else:
-            call("C:\\Users\\casht\\Projects\\mcGUI\\test-server\\run.bat")
+            call(config["serverStartScript"])
 
         return str(online) 
     
@@ -96,10 +98,12 @@ def listserverdir(dir):
             output = []
             for file in dirFiles:
                 print(config["serverLocation"] + directory + file)
+                lastModifiedUNIXStamp = int(path.getmtime(config["serverLocation"] + directory + file))
                 output.append({
                     "name": file,
                     "size": path.getsize(config["serverLocation"] + directory + file),
-                    "isDir": path.isdir(config["serverLocation"] + directory + file)
+                    "isDir": path.isdir(config["serverLocation"] + directory + file),
+                    "lastModified": datetime.utcfromtimestamp(lastModifiedUNIXStamp).strftime('%m-%d-%Y %H:%M')
                 })
 
             return dumps({
@@ -111,7 +115,7 @@ def listserverdir(dir):
 
 # Run a command on the server
 @api.route('/runcommand', methods=["POST"])
-def runcommand(dir):
+def runcommand():
     if 'loggedIn' in session:
         command = ''
         try:
@@ -124,3 +128,22 @@ def runcommand(dir):
             return resp
 
     return Response('You must be logged in to access the API', status=401)
+
+# Run a command on the server via a url
+@api.route('/runcommandurl/<path:path>', methods=["POST", "GET"])
+def runcommandurl(path):
+    if 'loggedIn' in session:
+
+        with MCRcon(config["serverAddress"], config["serverRCONPassword"], port=config["serverRCONPort"]) as mcr:
+            resp = mcr.command(path)
+            return resp
+
+    return Response('You must be logged in to access the API', status=401)
+
+@api.route('/stopmcgui', methods=["GET"])
+def stopmcgui():
+    if 'loggedIn' in session:
+        sys.exit()
+
+    return Response('You must be logged in to access the API', status=401)
+
