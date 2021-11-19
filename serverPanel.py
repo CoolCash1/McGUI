@@ -3,8 +3,13 @@ from flask.helpers import flash
 from werkzeug.utils import redirect
 from mcrcon import MCRcon
 from json import loads
+from os import path
 
-config = loads(open('config.json', 'r').read())
+global config
+if path.exists('config.json'):
+    config = loads(open("config.json", "r").read())
+else:
+    config = { "setup": False, "serverRCONPort": 25585, "serverQueryPort": 25565, "serverAddress": "", "serverRCONPassword": "" }
 
 serverPanel = Blueprint("serverPanel", __name__, static_folder="static", template_folder="templates")
 
@@ -50,6 +55,15 @@ def files():
 def players():
     if 'loggedIn' in session:
         return render_template('serverPanel/players.html')
+
+    else:
+        return redirect(url_for('login'))
+
+@serverPanel.route("/settings", methods=["GET", "POST"])
+def settings():
+    if 'loggedIn' in session:
+        if request.method == "GET":
+            return render_template('serverPanel/players.html')
 
     else:
         return redirect(url_for('login'))

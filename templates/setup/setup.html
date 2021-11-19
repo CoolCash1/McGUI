@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/setup.css">
+    <title>Setup McGUI</title>
+</head>
+
+<body style="height: 100vh; background: #000; overflow: hidden;">
+    <img src="/static/image/picsum-159-500px.jpg" class="bg-image absolute top-0 bottom-0 left-0 right-0 overflow-hidden">
+    <p class="footerText text-muted">McGUI Setup - <a href="">Help</a></p>
+    <div class="hidden align-items-center justify-content-center" id="fullScreenLoader">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-center bd-highlight mb-3 mainFlexBox " style="height: 100%;">
+        <div class="card slideCard" id="card1" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Welcome to McGUI</h5>
+                <p class="card-text">Thanks for choosing McGUI, your all-in-one Minecraft
+                    Server Management dashboard that you can access on any device,
+                    whenever, wherever.
+                </p>
+                <p>Note: Nothing is saved untill your done setup.</p>
+                <button href="#" class="btn btn-primary" onclick="changeSlide('card2')">Begin Setup</button>
+            </div>
+        </div>
+        <div class="card slideCard hidden" id="card2" style="width: 18rem;">
+            <div class="card-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 25%"></div>
+                </div>
+                <p></p>
+                <h5 class="card-title">Password</h5>
+                <p class="card-text">Choose a password for your McGUI Instance. Make sure 
+                    it is secure so only you can log in.
+                </p>
+                <input type="password" name="" id="password1" placeholder="Password">
+                <p></p>
+                <input type="password" name="" id="password2" placeholder="Confirm">
+                <p></p>
+                <button href="#" class="btn btn-secondary" onclick="changeSlide('card1')">Back</button>
+                <button href="#" class="btn btn-primary" onclick="confirmPasswords()">Next</button>
+            </div>
+        </div>
+        <div class="card slideCard hidden" id="card3" style="width: 18rem;">
+            <div class="card-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                </div>
+                <p></p>
+                <h5 class="card-title">Server Address</h5>
+                <p class="card-text">Input the address of your server. McGUI will ping
+                    your server, so make sure its running.
+                </p>
+                <input type="text" name="" id="serverAddress" placeholder="Server Address">
+                <p></p>
+                <input type="text" name="" id="port" disabled placeholder="Port (Optional)">
+                <p></p>
+                <button href="#" class="btn btn-secondary" onclick="changeSlide('card2')">Back</button>
+                <button href="#" class="btn btn-primary" onclick="pingServer()">Ping</button>
+            </div>
+        </div>
+        <div class="card slideCard hidden" id="card4" style="width: 18rem;">
+            <div class="card-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+                </div>
+                <p></p>
+                <h5 class="card-title">Server Settings</h5>
+                <p class="card-text">Now that you've pinged your server, its time to add
+                    your server's directory (relative to McGUI).
+                </p>
+                <input type="text" name="" id="serverDir" placeholder="Server Directory">
+                <p></p>
+                <input type="text" name="" id="RCONPasswd" placeholder="RCON Password">
+                <p></p>
+                <button href="#" class="btn btn-secondary" onclick="changeSlide('card3')">Back</button>
+                <button href="#" class="btn btn-primary" onclick="checkServerDir()">Next</button>
+            </div>
+        </div>
+        <div class="card slideCard hidden" id="card5" style="width: 18rem;">
+            <div class="card-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+                <p></p>
+                <h5 class="card-title">One more thing</h5>
+                <p class="card-text">What would you like to name your server. Also add a system
+                    command to start your server from McGUI.
+                </p>
+                <input type="text" name="" id="serverName" placeholder="Server Name">
+                <p></p>
+                <input type="text" name="" id="serverScript" placeholder="Start Script (start.bat/.sh)">
+                <p></p>
+                <button href="#" class="btn btn-secondary" onclick="changeSlide('card4')">Back</button>
+                <button href="#" class="btn btn-primary" onclick="finish()">Finish</button>
+            </div>
+        </div>
+        <div class="card slideCard hidden" id="loadingSlide" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Done!</h5>
+                <p class="card-text">Your McGUI Instance is now restarting. Reload a couple times 
+                    untill its done.
+            </div>
+        </div>
+        <div class="card slideCard hidden" id="complete" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">All done</h5>
+                <p class="card-text">McGUI is now ready for use. Click the button below to start
+                    using your server interface now.
+                <p></p>
+                <button href="#" class="btn btn-primary" onclick="location.reload()">Go to Dashboard</button>
+            </div>
+        </div>
+        <div class="card slideCard hidden" id="fail" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Failed</h5>
+                <p class="card-text">McGUI setup failed. Please reload the page to restart.
+                    Your browser's dev tools might show more information in the Javascript
+                    console.
+                <!-- <button href="#" class="btn btn-primary" onclick="location.reload()">Restart</button> -->
+            </div>
+        </div>
+    </div>
+    <script src="/static/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="/static/js/libraries/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/libraries/jsrender.min.js"></script>
+    <script src="/static/js/setup/setup.js"></script>
+</body>
+
+</html>

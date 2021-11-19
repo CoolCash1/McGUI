@@ -4,8 +4,18 @@ from datetime import time, timedelta
 from json import loads, dumps
 from serverPanel import serverPanel
 from api import api
+from setup import Setup
 
 currentVersion = "Alpha 1.0"
+
+global config
+if path.exists('config.json'):
+    config = loads(open("config.json", "r").read())
+else:
+    config = { "setup": False, "serverRCONPort": 25585, "serverQueryPort": 25565, "serverLocation": "" }
+
+if not config['serverLocation'].endswith('\\'):
+    config['serverLocation'] += '\\'
 
 app = Flask(__name__)
 app.secret_key = "TEST1234"
@@ -13,10 +23,9 @@ app.permanent_session_lifetime = timedelta(days=7)
 app.register_blueprint(serverPanel, url_prefix="")
 app.register_blueprint(api, url_prefix="/api")
 
-global config
-config = loads(open("config.json", "r").read())
-if not config['serverLocation'].endswith('\\'):
-    config['serverLocation'] += '\\'
+setup = Flask(__name__)
+setup.secret_key = "TEST1234"
+setup.register_blueprint(Setup, url_prefix="")
 
 if not path.exists(config['serverLocation']):
     print('Server path is invalid!')
@@ -90,6 +99,10 @@ def about():
 def opensource():
     return render_template('opensource.html')
 
+@app.route("/mode")
+def mode():
+    return 'normalMode'
+
 # HOST STATIC FILES
 @app.route('/static/<path:path>')
 def send_js(path):
@@ -109,4 +122,8 @@ def inject_stage_and_region():
     return dict(config = config, currentVersion = currentVersion)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    if config['setup']:
+        app.run(debug=True, host="0.0.0.0")
+
+    else:
+        setup.run(debug=True, host="0.0.0.0")

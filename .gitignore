@@ -11,3 +11,4 @@ test-server/*
 !test-server/run.bat
 
 # config / secrete files 
+config.json

@@ -11,7 +11,11 @@ from werkzeug.wrappers import response
 
 api = Blueprint("api", __name__, static_folder="static", template_folder="templates")
 
-config = loads(open('config.json', 'r').read())
+global config
+if path.exists('config.json'):
+    config = loads(open("config.json", "r").read())
+else:
+    config = { "setup": False, "serverRCONPort": 25585, "serverQueryPort": 25565, "serverAddress": "", "serverRCONPassword": "", "serverLocation": "" }
 if not config['serverLocation'].endswith('\\'):
     config['serverLocation'] += '\\'
 
@@ -143,7 +147,10 @@ def runcommandurl(path):
 @api.route('/stopmcgui', methods=["GET"])
 def stopmcgui():
     if 'loggedIn' in session:
-        sys.exit()
+        func = request.environ.get('werkzeug.server.shutdown')
+        if func is None:
+            raise RuntimeError('Not running with the Werkzeug Server')
+        func()
 
     return Response('You must be logged in to access the API', status=401)
 
