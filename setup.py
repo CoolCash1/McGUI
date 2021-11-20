@@ -7,7 +7,7 @@ from mcstatus import MinecraftServer
 from os.path import exists
 from subprocess import Popen
 
-config = {}
+config = {"serverRCONPort": 25585}
 
 Setup = Blueprint("Setup", __name__, static_folder="static", template_folder="templates")
 

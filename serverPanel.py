@@ -13,8 +13,6 @@ else:
 
 serverPanel = Blueprint("serverPanel", __name__, static_folder="static", template_folder="templates")
 
-mcr = MCRcon(config["serverAddress"], config["serverRCONPassword"])
-
 @serverPanel.route("/")
 def home():
     if 'loggedIn' in session:
@@ -30,6 +28,24 @@ def terminal():
             return render_template("serverPanel/terminal.html")
 
         else:
+            mcr = MCRcon(config["serverAddress"], config["serverRCONPassword"], port=config["serverRCONPort"])
+            mcr.connect()
+            command = request.form['command']
+            resp = mcr.command(command)
+            mcr.disconnect()
+            return resp
+
+    else:
+        return redirect(url_for('login'))
+
+@serverPanel.route("/chat", methods=["POST", "GET"])
+def chat():
+    if 'loggedIn' in session:
+        if request.method == "GET":
+            return render_template("serverPanel/terminal.html")
+
+        else:
+            mcr = MCRcon(config["serverAddress"], config["serverRCONPassword"], port=config["serverRCONPort"])
             mcr.connect()
             command = request.form['command']
             resp = mcr.command(command)
