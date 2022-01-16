@@ -1,9 +1,0 @@
-.hidden {
-    display: none;
-}
-
-.drop-hovered {
-    border: blue;
-    border-width: 2px;
-    border-style: solid;
-}
