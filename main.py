@@ -5,6 +5,9 @@ from json import loads, dumps
 from serverPanel import serverPanel
 from api import api
 from setup import Setup
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 currentVersion = "Alpha 1.0"
 
@@ -12,7 +15,7 @@ global config
 if path.exists('config.json'):
     config = loads(open("config.json", "r").read())
 else:
-    config = { "setup": False, "serverRCONPort": 25585, "serverQueryPort": 25565, "serverLocation": "" }
+    config = loads(open("defaultConfig.json", "r").read())
 
 if not config['serverLocation'].endswith('\\'):
     config['serverLocation'] += '\\'
