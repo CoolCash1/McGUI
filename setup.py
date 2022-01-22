@@ -53,6 +53,9 @@ def completeSetup():
         config['serverRCONPassword'] = request.form['rcon']
         config['serverName'] = request.form['serverName']
 
+        if not config['serverLocation'].endswith('\\'):
+            config['serverLocation'] += '\\'
+
     except KeyError:
         return 'fail'
 

@@ -92,6 +92,9 @@ function viewFile(fileName) {
             $('#downloadButton').click(function(event) {
                 window.open('/server/' + currentDirectory + '/' + fileName, '_blank').focus();
             })
+            $('#saveButton').click(function(event) {
+                $.post(`/api/save?fileName=${fileName}&fileData=${$('#fileDataArea').data}`)
+            })
         })
         fileModal.show()
     }

@@ -144,6 +144,26 @@ def runcommandurl(path):
 
     return Response('You must be logged in to access the API', status=401)
 
+# Save a server file
+@api.route('/save', methods=["POST"])
+def saveFile(path):
+    if 'loggedIn' in session:
+        fileName = request.args.get('fileName')
+        fileData = request.args.get('fileData')
+        
+        if path.exists(config["serverLocation"] + fileName):
+            try:
+                open(config["serverLocation"] + fileName, 'w').write(fileData)
+                return 'ok'
+            
+            except:
+                return 'fail'
+        
+        else:
+            return 'fileNotFound'
+
+    return Response('You must be logged in to access the API', status=401)
+
 @api.route('/stopmcgui', methods=["GET"])
 def stopmcgui():
     if 'loggedIn' in session:
