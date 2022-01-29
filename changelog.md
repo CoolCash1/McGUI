@@ -43,4 +43,4 @@ What needs work
 - Plugin Support
 - Specific features for server version (forge, bukkit
 etc.)
-- File Explorer "Modified" row
+- File Explorer "Modified" column
