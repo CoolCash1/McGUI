@@ -1,3 +1,5 @@
+import threading
+import time
 from flask import Blueprint, render_template, sessions, session, url_for, request, Response
 from json import loads, dumps
 from mcstatus import MinecraftServer
@@ -19,50 +21,65 @@ else:
 if not config['serverLocation'].endswith('\\'):
     config['serverLocation'] += '\\'
 
+def updateServerStatus():
+    online = True
+    queryAllowed = True
+    try:
+        global server
+        server = MinecraftServer.lookup(config["serverAddress"],)
+        server.status()
+    except:
+        online = False
+
+    try:
+        server.query()
+    except:
+        queryAllowed = False
+
+    returnVal = {
+        "name": config["serverName"],
+        "online": online,
+        "initPing": False
+    }
+
+    if online:
+        status = server.status()
+        returnVal["queryAllowed"] = queryAllowed
+        returnVal["status"] = {
+            "latency": status.latency,
+            "motd": status.description,
+            "players": {
+                "max": status.players.max,
+                "current": status.players.online
+            }
+        }
+        if queryAllowed:
+            query = server.query()
+            returnVal["queryData"] = {
+                "version": query.software.version,
+                "software": query.software.brand,
+                "plugins": query.software.plugins,
+                "onlinePlayers": query.players.names
+            }
+    return returnVal
+
+def updateThreadFunc():
+    while True:
+        global serverStatus
+        serverStatus = {"initPing": True}
+        serverStatus = updateServerStatus()
+        time.sleep(5)
+
+updateThread = threading.Thread(target=updateThreadFunc)
+updateThread.start()
+
 print(config["serverLocation"])
+print('Minecraft Server Console will display here.')
 
 @api.route('/server/')
 def server():
     if 'loggedIn' in session:
-        online = True
-        queryAllowed = True
-        try:
-            global server
-            server = MinecraftServer.lookup(config["serverAddress"],)
-            server.status()
-        except:
-            online = False
-
-        try:
-            server.query()
-        except:
-            queryAllowed = False
-
-        returnVal = {
-            "name": config["serverName"],
-            "online": online,
-        }
-
-        if online:
-            status = server.status()
-            returnVal["queryAllowed"] = queryAllowed
-            returnVal["status"] = {
-                "latency": status.latency,
-                "motd": status.description,
-                "players": {
-                    "max": status.players.max,
-                    "current": status.players.online
-                }
-            }
-            if queryAllowed:
-                query = server.query()
-                returnVal["queryData"] = {
-                    "version": query.software.version,
-                    "software": query.software.brand,
-                    "plugins": query.software.plugins,
-                    "onlinePlayers": query.players.names
-                }
-        return dumps(returnVal)
+        return dumps(serverStatus)
     
     return Response('You must be logged in to access the API', status=401)
 
@@ -101,7 +118,6 @@ def listserverdir(dir):
 
             output = []
             for file in dirFiles:
-                print(config["serverLocation"] + directory + file)
                 lastModifiedUNIXStamp = int(path.getmtime(config["serverLocation"] + directory + file))
                 output.append({
                     "name": file,
@@ -146,14 +162,14 @@ def runcommandurl(path):
 
 # Save a server file
 @api.route('/save', methods=["POST"])
-def saveFile(path):
+def saveFile():
     if 'loggedIn' in session:
         fileName = request.args.get('fileName')
         fileData = request.args.get('fileData')
         
         if path.exists(config["serverLocation"] + fileName):
             try:
-                open(config["serverLocation"] + fileName, 'w').write(fileData)
+                open(config["serverLocation"] + fileName, 'w').write(fileData.replace('\\n', '\n'))
                 return 'ok'
             
             except:
